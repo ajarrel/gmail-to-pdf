@@ -120,13 +120,44 @@ function formatDate(message, format, timezone) {
  *
  * @method messageGetPdfAttachment
  * @param {GmailMessage} message GmailMessage object
- * @return {Blob|boolean} Blob on success, else false
+ * @return {Blob|boolean, string} ObjectBlob on success, else false
  */
-function messageGetPdfAttachment(message) {
+function messageGetAttachments(message) {
   var attachments = message.getAttachments();
   for (var i=0; i < attachments.length; i++) {
-    if (attachments[i].getContentType() == 'application/pdf') {
-      return attachments[i].copyBlob();
+    switch( attachments[i].getContentType() ) {
+      case "application/pdf":
+        return { "blob": attachments[i].copyBlob(), "filesuffix": '.pdf'};
+        break;
+      case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+        return { "blob": attachments[i].copyBlob(), "filesuffix": '.docx'};
+        break;
+      case "application/msword":
+        return { "blob": attachments[i].copyBlob(), "filesuffix": '.doc'};
+        break;
+      case "application/vnd.ms-excel":
+        return { "blob": attachments[i].copyBlob(), "filesuffix": '.xls'};
+        break;
+      case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+        return { "blob": attachments[i].copyBlob(), "filesuffix": '.xlsx'};
+        break;
+      case "application/vnd.ms-excel":
+        return { "blob": attachments[i].copyBlob(), "filesuffix": '.xls'};
+        break;
+      case "image/bmp":
+        return { "blob": attachments[i].copyBlob(), "filesuffix": '.bmp'};
+        break;
+      case "image/gif":
+        return { "blob": attachments[i].copyBlob(), "filesuffix": '.gif'};
+        break;
+      case "image/jpeg":
+        return { "blob": attachments[i].copyBlob(), "filesuffix": '.jpg'};
+        break;
+      case "image/png":
+        return { "blob": attachments[i].copyBlob(), "filesuffix": '.png'};
+        break;
+      default:
+        return false;
     }
   }
   return false;
